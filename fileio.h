@@ -1,15 +1,11 @@
 #include <stdio.h>
 #include <string.h>
 
-int read_hmm_coef(char path_hmm[], int *num_components, int *num_features, long double** transition, long double** emission, long double** initial)
+int read_hmm_size(char path_hmm[], int *num_components, int *num_features)
 {
 	FILE* fp = NULL;
 	int n_components, n_features;
-	int line_num_file;
 	char line[512];
-	long double* transition_mat = malloc(n_components * n_components);
-	long double* emission_mat = malloc(n_components * n_features);
-	long double* initial_mat = malloc(n_components);
 	char* ptr;
 	char path_hmm_cpy[40];
 	char path[40] = "";
@@ -47,6 +43,24 @@ int read_hmm_coef(char path_hmm[], int *num_components, int *num_features, long 
 		return 0;
 	}
 	fclose(fp);
+	return 1;
+}
+
+int read_hmm_coef(char path_hmm[], int n_components, int n_features, long double* transition_mat, long double* emission_mat, long double* initial_mat) {
+	
+	FILE* fp = NULL;
+	int line_num_file;
+	char line[512];
+	char* ptr;
+	char path_hmm_cpy[40];
+	char path[40] = "";
+
+	strcpy(path_hmm_cpy, path_hmm);
+	if (path_hmm[0] == '\0')
+	{
+		strcpy(path_hmm_cpy, ".");
+	}
+
 	// Read transition probability matrix
 	line_num_file = 0;
 	strcpy(path, path_hmm_cpy);
@@ -95,10 +109,5 @@ int read_hmm_coef(char path_hmm[], int *num_components, int *num_features, long 
 		return 0;
 	}
 	fclose(fp);
-	*transition = transition_mat;
-	*emission = emission_mat;
-	*initial = initial_mat;
-
-	
 	return 1;
 }
