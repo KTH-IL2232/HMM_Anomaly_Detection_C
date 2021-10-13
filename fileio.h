@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
+<<<<<<< HEAD
 int read_hmm_coef(char path_hmm[], int *num_components, int *num_features, long double** transition, long double** emission, long double** initial)
 {
 	FILE* fp = NULL;
@@ -10,6 +11,13 @@ int read_hmm_coef(char path_hmm[], int *num_components, int *num_features, long 
 	long double* transition_mat = malloc(n_components * n_components);
 	long double* emission_mat = malloc(n_components * n_features);
 	long double* initial_mat = malloc(n_components);
+=======
+int read_hmm_size(char path_hmm[], int *num_components, int *num_features)
+{
+	FILE* fp = NULL;
+	int n_components, n_features;
+	char line[512];
+>>>>>>> parent of 36cf26a (Reading parameters from file.)
 	char* ptr;
 	char path_hmm_cpy[40];
 	char path[40] = "";
@@ -47,6 +55,27 @@ int read_hmm_coef(char path_hmm[], int *num_components, int *num_features, long 
 		return 0;
 	}
 	fclose(fp);
+<<<<<<< HEAD
+=======
+	return 1;
+}
+
+int read_hmm_coef(char path_hmm[], int n_components, int n_features, long double* transition_mat, long double* emission_mat, long double* initial_mat) {
+	
+	FILE* fp = NULL;
+	int line_num_file;
+	char line[512];
+	char* ptr;
+	char path_hmm_cpy[40];
+	char path[40] = "";
+
+	strcpy(path_hmm_cpy, path_hmm);
+	if (path_hmm[0] == '\0')
+	{
+		strcpy(path_hmm_cpy, ".");
+	}
+
+>>>>>>> parent of 36cf26a (Reading parameters from file.)
 	// Read transition probability matrix
 	line_num_file = 0;
 	strcpy(path, path_hmm_cpy);
@@ -63,6 +92,7 @@ int read_hmm_coef(char path_hmm[], int *num_components, int *num_features, long 
 		return 0;
 	}
 	fclose(fp);
+<<<<<<< HEAD
 
 	// Read emission probability matrix
 	line_num_file = 0;
@@ -100,5 +130,39 @@ int read_hmm_coef(char path_hmm[], int *num_components, int *num_features, long 
 	*initial = initial_mat;
 
 	
+=======
+
+	// Read emission probability matrix
+	line_num_file = 0;
+	strcpy(path, path_hmm_cpy);
+	strcat(path, "/Emission_Probability_Matrix.txt");
+	fp = fopen(path, "r");
+	while (fgets(line, sizeof(line), fp)) {
+		sscanf(line, "%lf", &emission_mat[line_num_file]);
+		//printf("%g\n", emission_mat[line_num_file]);
+		line_num_file += 1;
+	}
+	if (line_num_file != n_components * n_features) {
+		printf("Length of Emission_Probability_Matrix [%i] does not match the given number of components [%i]", line_num_file, n_components * n_features);
+		return 0;
+	}
+	fclose(fp);
+
+	// Read initial probability matrix
+	line_num_file = 0;
+	strcpy(path, path_hmm_cpy);
+	strcat(path, "/Initial_Probability_Matrix.txt");
+	fp = fopen(path, "r");
+	while (fgets(line, sizeof(line), fp)) {
+		sscanf(line, "%lf", &initial_mat[line_num_file]);
+		//printf("%g\n", initial_mat[line_num_file]);
+		line_num_file += 1;
+	}
+	if (line_num_file != n_components) {
+		printf("Length of Initial_Probability_Matrix [%i] does not match the given number of components [%i]", line_num_file, n_components);
+		return 0;
+	}
+	fclose(fp);
+>>>>>>> parent of 36cf26a (Reading parameters from file.)
 	return 1;
 }
