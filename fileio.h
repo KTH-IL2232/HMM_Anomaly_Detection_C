@@ -1,113 +1,19 @@
+#ifndef fileio_h
+#define fileio_h
+
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
-int read_hmm_size(char path_hmm[], int *num_components, int *num_features)
-{
-	FILE* fp = NULL;
-	int n_components, n_features;
-	char line[512];
-	char* ptr;
-	char path_hmm_cpy[40];
-	char path[40] = "";
-	
-	strcpy(path_hmm_cpy, path_hmm);
-	if (path_hmm[0] == '\0')
-	{
-		strcpy(path_hmm_cpy, ".");
-	}
+// REQUIRE: path_hmm is a valid path to dir Model_Parameters
+// MODIFIE: *num_components, *num_features
+// EFFECTS: reads the file N_Components.txt and N_Features.txt
+//          stores the parameters in *num_components, *num_features
+//          returns 0 on success, -1 on failure
+int read_hmm_size(const char *path_hmm,
+                  int *num_components, int *num_features);
 
-	// Read number of components (states)
-	strcpy(path, path_hmm_cpy);
-	strcat(path, "/N_Components.txt");
-	fp = fopen(path, "r");
-	if (fgets(line, sizeof(line), fp)) {
-		n_components = strtol(line, &ptr, 10);
-		*num_components = n_components;
-	}
-	else {
-		printf("No content in N_Components.txt is detected, or make sure the path is right. ");
-		return 0;
-	}
-	fclose(fp);
+int read_hmm_coef(const char *path_hm, long double* transition_mat,
+                  long double* emission_mat, long double* initial_mat);
 
-	// Read number of features (observations)
-	strcpy(path, path_hmm_cpy);
-	strcat(path, "/N_Features.txt");
-	fp = fopen(path, "r");
-	if (fgets(line, sizeof(line), fp)) {
-		n_features = strtol(line, &ptr, 10);
-		*num_features = n_features;
-	}
-	else {
-		printf("No content in N_Features.txt is detected");
-		return 0;
-	}
-	fclose(fp);
-	return 1;
-}
-
-int read_hmm_coef(char path_hmm[], int n_components, int n_features, long double* transition_mat, long double* emission_mat, long double* initial_mat) {
-	
-	FILE* fp = NULL;
-	int line_num_file;
-	char line[512];
-	char* ptr;
-	char path_hmm_cpy[40];
-	char path[40] = "";
-
-	strcpy(path_hmm_cpy, path_hmm);
-	if (path_hmm[0] == '\0')
-	{
-		strcpy(path_hmm_cpy, ".");
-	}
-
-	// Read transition probability matrix
-	line_num_file = 0;
-	strcpy(path, path_hmm_cpy);
-	strcat(path, "/Transition_Probability_Matrix.txt");
-	fp = fopen(path, "r");
-	while (fgets(line, sizeof(line), fp)) {
-		sscanf(line, "%lf", &transition_mat[line_num_file]);
-		//printf("%g\n", transition_mat[line_num_file]);
-		line_num_file += 1;
-	}
-
-	if (line_num_file != n_components * n_components) {
-		printf("Length of Transition_Probability_Matrix [%i] does not match the given number of components [%i]", line_num_file, n_components * n_components);
-		return 0;
-	}
-	fclose(fp);
-
-	// Read emission probability matrix
-	line_num_file = 0;
-	strcpy(path, path_hmm_cpy);
-	strcat(path, "/Emission_Probability_Matrix.txt");
-	fp = fopen(path, "r");
-	while (fgets(line, sizeof(line), fp)) {
-		sscanf(line, "%lf", &emission_mat[line_num_file]);
-		//printf("%g\n", emission_mat[line_num_file]);
-		line_num_file += 1;
-	}
-	if (line_num_file != n_components * n_features) {
-		printf("Length of Emission_Probability_Matrix [%i] does not match the given number of components [%i]", line_num_file, n_components * n_features);
-		return 0;
-	}
-	fclose(fp);
-
-	// Read initial probability matrix
-	line_num_file = 0;
-	strcpy(path, path_hmm_cpy);
-	strcat(path, "/Initial_Probability_Matrix.txt");
-	fp = fopen(path, "r");
-	while (fgets(line, sizeof(line), fp)) {
-		sscanf(line, "%lf", &initial_mat[line_num_file]);
-		//printf("%g\n", initial_mat[line_num_file]);
-		line_num_file += 1;
-	}
-	if (line_num_file != n_components) {
-		printf("Length of Initial_Probability_Matrix [%i] does not match the given number of components [%i]", line_num_file, n_components);
-		return 0;
-	}
-	fclose(fp);
-	return 1;
-}
+#endif
