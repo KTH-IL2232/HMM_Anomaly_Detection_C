@@ -4,6 +4,53 @@
 
 #include "fileio.h"
 
+int readFile_singleNumber(const char *root_path, const char *cat_path,
+                          int *buf){
+    const int path_length_max = 512;
+    const int line_width_max = 512;
+
+    FILE* fp = NULL;
+    char path[path_length_max]; // stores temporal path
+    char line[line_width_max]; // stores temporal line
+    strcpy(path, root_path);
+    strcat(path, cat_path);
+    
+    fp = fopen(path, "r");
+    if (fgets(line, sizeof(line), fp)) {
+        *buf = (int)strtol(line, NULL, 10);
+    }
+    else {
+        printf("Failure: %s is empty!", path);
+        return -1;
+    }
+    fclose(fp);
+    
+    return 0;
+}
+
+int readFile_long(const char *root_path, const char *cat_path,
+                  long double *buf){
+    const int path_length_max = 512;
+    const int line_width_max = 512;
+
+    FILE* fp = NULL;
+    char path[path_length_max];
+    char line[line_width_max];
+    int line_num_file = 0;
+    strcpy(path, root_path);
+    strcat(path, cat_path);
+    
+    fp = fopen(path, "r");
+    line_num_file = 0;
+    while (fgets(line, sizeof(line), fp)) {
+        sscanf(line, "%Lf", &buf[line_num_file]);
+        line_num_file++;
+        
+    }
+    fclose(fp);
+    return 0;
+}
+
 int read_hmm_size(const char* path_hmm, int* num_components, int* num_features)
 {
 	const int path_length_max = 512;
