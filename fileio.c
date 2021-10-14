@@ -59,8 +59,13 @@ int read_hmm_coef(const char* path_hmm, long double* transition_mat,
 	line_num_file = 0;
 	while (fgets(line, sizeof(line), fp)) {
 		sscanf(line, "%Lf", &transition_mat[line_num_file]);
+		printf("%i: %g\n", line_num_file, transition_mat[line_num_file]);
 		line_num_file++;
+		
 	}
+	printf("T[0] = %g, T[end] = %g\n",
+		transition_mat[0], transition_mat[899]);
+
 	fclose(fp);
 
 	// Read emission probability matrix
@@ -72,6 +77,9 @@ int read_hmm_coef(const char* path_hmm, long double* transition_mat,
 		sscanf(line, "%Lf", &emission_mat[line_num_file]);
 		line_num_file++;
 	}
+	printf("E[0] = %g, E[end] = %g\n",
+		emission_mat[0], emission_mat[239]);
+
 	fclose(fp);
 
 	// Read initial probability matrix
@@ -83,6 +91,8 @@ int read_hmm_coef(const char* path_hmm, long double* transition_mat,
 		sscanf(line, "%Lf", &initial_mat[line_num_file]);
 		line_num_file++;
 	}
+	printf("I[0] = %g, I[end] = %g\n",
+		initial_mat[0], initial_mat[29]);
 	fclose(fp);
 
 	return 0;
