@@ -1,21 +1,37 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "fileio.h"
+#include "Forward.h"
+#include "DiscreteModelFunc.h"
+#include "AnomalyDetection.h"
 
 int main()
 {
     // Windows path
     // const char *path_hmm = "./Model_Parameters";
+    // const char *path_statistics = "./obtained_statistics";
+    // const char *path_dataset = ./dataset";
     // MAC path
-    const char* path_hmm = "/Users/yang/Desktop/IL2232/MyCode/CVersionHMM/HMM_Anomaly_Detection_C/Model_Parameters";
+    const char *path_statistics =
+    "/Users/yang/Desktop/IL2232/MyCode/CVersionHMM/HMM_Anomaly_Detection_C/obtained_statistics";
+    const char* path_hmm =
+    "/Users/yang/Desktop/IL2232/MyCode/CVersionHMM/HMM_Anomaly_Detection_C/Model_Parameters";
+    const char *path_dataset =
+    "/Users/yang/Desktop/IL2232/MyCode/CVersionHMM/HMM_Anomaly_Detection_C/dataset";
 
-    // read the number of components and number of features
-    int n_components, n_features;
+    // read single numbers
+    int n_components, n_features, n_samples, l_samples_file;
     readFile_singleNumber(path_hmm, "/N_Components.txt",
                           &n_components);
     readFile_singleNumber(path_hmm, "/N_Features.txt",
                           &n_features);
+    readFile_singleNumber(path_dataset, "/Test_anomaly_set_samples.txt",
+                          &n_samples);
+    readFile_singleNumber(path_dataset,
+                          "/Test_anomaly_set_array_size.txt",
+                          &l_samples_file);
 
     // read pi, A, B
     long double* transition_mat = malloc(n_components * n_components
@@ -31,14 +47,34 @@ int main()
     readFile_long(path_hmm, "/Initial_Probability_Matrix.txt",
                   initial_mat);
     
+    // read dataset
+    int *observation_sequence_set = malloc(l_samples_file *
+                                 sizeof(int));
+    int *observation_length_set = malloc(n_samples *
+                                                 sizeof(int));
+    int *label_sequence = malloc(n_samples * sizeof(int));
+    readFile_long_int(path_dataset, "/Test_anomaly_set_array.txt",
+                      observation_sequence_set);
+    readFile_long_int(path_dataset, "/Test_anomaly_set_length.txt",
+                      observation_length_set);
+    readFile_long_int(path_dataset, "/Test_anomaly_set_label.txt",
+                      label_sequence);
+    
+    anomalyDetection(initial_mat, transition_mat, emission_mat,
+                     observation_sequence_set,
+                     observation_length_set,
+                     label_sequence,
+                     n_components, n_features,
+                     n_samples,
+                     path_statistics);
+    
     // ends the program
     free(transition_mat);
     free(emission_mat);
     free(initial_mat);
+    free(observation_sequence_set);
+    free(observation_length_set);
     
-    printf("nc = %d, nf = %d\n",n_components, n_features);
-    printf("T[0] = %Lf, T[end] = %Lf\n",transition_mat[0], transition_mat[899]);
-    printf("E[0] = %Lf, E[end] = %Lf\n",emission_mat[0], emission_mat[239]);
-    printf("I[0] = %Lf, I[end] = %Lf\n",initial_mat[0], initial_mat[29]);
+    //nothing should be added here!
     return 0;
 }
