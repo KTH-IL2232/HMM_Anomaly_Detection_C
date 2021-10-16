@@ -2,8 +2,8 @@
  This header file describes basic functions for HMM model with discrete
  observation densities.
  important assumtion: V = (1, ..., M) (int)
- Therefore, the user have to make sure that the observation sequence
- is properly preprocessed.
+ This feature could also be changed to V = [0, ..., M - 1].
+ User has to make sure that it matches with the dataset.
 */
 
 #ifndef ModelFunc_h

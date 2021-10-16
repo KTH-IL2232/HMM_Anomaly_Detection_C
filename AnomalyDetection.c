@@ -39,13 +39,14 @@ int anomalyDetection(long double *pi, long double *a, long double *b,
     saveFileLongDouble(path_statistics, "/P.txt", P_s, n_samples);
 
     calcStat(TP, FP, TN, FN);
+    free(P_s);
     return 0;
 }
 
 int testPositive(double *TP, double *FP, double *TN, double *FN,
                  long double P, int label){
     int is_anomaly = 0;
-    long double threshold = -24.;
+    long double threshold = -10.;
     if (P < threshold){
         is_anomaly = 1;
     }

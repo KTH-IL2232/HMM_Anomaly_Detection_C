@@ -18,7 +18,8 @@ int extractObservationSequence(int *O, int *SL, int i, int *buf){
 }
 
 int Ot(int *O, int t){
-    return O[t] - 1;
+    // return O[t] - 1; // if V = [1, ..., M]
+    return O[t]; // if V = [0, ..., M - 1]
 }
 
 long double biOt(long double *b, int i, int *O, int t, int nF){

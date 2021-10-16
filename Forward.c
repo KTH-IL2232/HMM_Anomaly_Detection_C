@@ -64,7 +64,7 @@ long double forward(long double *pi, long double *b, long double *a,
         P += alpha_t_i_get(alpha, SL - 1, i, nC);
     }
     
-    alpha_print(alpha, SL, nC);
+    // alpha_print(alpha, SL, nC);
     
     free(alpha);
     return P;
