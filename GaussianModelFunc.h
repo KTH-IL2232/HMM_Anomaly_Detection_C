@@ -6,35 +6,36 @@
  User has to make sure that it matches with the dataset.
 */
 
-#ifndef DiscreteModelFunc_h
-#define DiscreteModelFunc_h
+#ifndef ModelFunc_h
+#define ModelFunc_h
 
-#include "macros.h"
-
-#ifdef DiscreteEmisDensity
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
+#include "macros.h"
+
+#ifdef GaussianEmisDensity
 // SL is Sample Length = T
 // REQUIRE: buf has been allocated enough memory space
 //          i = [0, ..., n_Samples - 1]
 // EFFECTS: extract the ith observation sequence to buf
-int extractObservationSequence(int *O, int *SL, int i, int *buf);
+long double extractObservationSequence(long double *O,
+                                       int *SL, int i, long double *buf);
+#endif
 
 // REQUIRE: t = [0, ..., T - 1]
 // EFFECTS: quantize [1, ..., M] to [0, ..., M - 1]
-int Ot(int *O, int t);
+long double Ot(long double *O, int t);
 
-// bi(Ot), i \in [0, n_components - 1], t \in [0, T - 1]
-// nF = number of features
-long double biOt(long double *b, int i, int *O, int t, int nF);
+// bi(Ot) ~ N (Ot, expectancy, std_variance)
+long double biOt(long double *expectancy, long double *std_variance,
+                 int i, long double *O, int t);
 
 // a_{ij}
 long double aij(long double *a, int i, int j, int nC);
 
 // print all data in the observation sequence
-int printObservation(int *O, int length);
+long double printObservation(long double *O, int length);
 
-#endif
 #endif

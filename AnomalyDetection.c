@@ -4,10 +4,19 @@
 #include <math.h>
 
 #include "AnomalyDetection.h"
-#include "DiscreteModelFunc.h"
 #include "Forward.h"
 #include "fileio.h"
+#include "macros.h"
 
+#ifdef DiscreteEmisDensity
+#include "DiscreteModelFunc.h"
+#endif
+
+#ifdef GaussianEmisDensity
+#include "GaussianModelFunc.h"
+#endif
+
+#ifdef DiscreteEmisDensity
 int anomalyDetection(long double *pi, long double *a, long double *b,
                      int *observation_sequence_set,
                      int *observation_length_set,
@@ -42,11 +51,51 @@ int anomalyDetection(long double *pi, long double *a, long double *b,
     free(P_s);
     return 0;
 }
+#endif
+
+#ifdef GaussianEmisDensity
+int anomalyDetection(long double *pi, long double *a,
+                     long double *expectancy, long double *std_variance,
+                     long double *observation_sequence_set,
+                     int *observation_length_set,
+                     int *label_sequence,
+                     int n_components,
+                     int n_samples,
+                     const char *path_statistics){
+    // anomaly detection
+    double TP = 0., FP = 0., TN = 0., FN = 0.;
+    long double *P_s = malloc(n_samples * sizeof(long double));
+    for (int i = 0; i < n_samples; i++){
+        //extract the observation sequence from the set
+        long double *O = malloc(observation_length_set[i] *
+                                sizeof(long double));
+        extractObservationSequence(observation_sequence_set,
+                                   observation_length_set, i, O);
+        // evaluate P (O | lambda)
+        long double P = 0;
+        P = forward(pi, expectancy, std_variance, a, O,
+                    n_components, observation_length_set[i]);
+        P = logl(P); // log likelihood
+        P_s[i] = P;
+        
+        testPositive(&TP, &FP, &TN, &FN, P, label_sequence[i]);
+        
+        free(O);
+    }
+    
+    // save results to file
+    saveFileLongDouble(path_statistics, "/P.txt", P_s, n_samples);
+
+    calcStat(TP, FP, TN, FN);
+    free(P_s);
+    return 0;
+}
+#endif
 
 int testPositive(double *TP, double *FP, double *TN, double *FN,
                  long double P, int label){
     int is_anomaly = 0;
-    long double threshold = -10.;
+    long double threshold = -40.;
     if (P < threshold){
         is_anomaly = 1;
     }

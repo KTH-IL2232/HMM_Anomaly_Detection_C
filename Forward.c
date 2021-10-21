@@ -2,8 +2,15 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "macros.h"
 #include "Forward.h"
+#ifdef DiscreteEmisDensity
 #include "DiscreteModelFunc.h"
+#endif
+
+#ifdef GaussianEmisDensity
+#include "GaussianModelFunc.h"
+#endif
 
 int alpha_t_i_assign(long double *alpha, int t, int i, long double val, int nC){
     int start_id = nC * t;
@@ -34,6 +41,7 @@ int alpha_print(long double *alpha, int SL, int nC){
     return 0;
 }
 
+#ifdef DiscreteEmisDensity
 long double forward(long double *pi, long double *b, long double *a,
             int *O, int nC, int nF, int SL){
     long double *alpha = malloc(SL * nC * sizeof(long double));
@@ -69,3 +77,44 @@ long double forward(long double *pi, long double *b, long double *a,
     free(alpha);
     return P;
 }
+#endif
+
+#ifdef GaussianEmisDensity
+long double forward(long double *pi,
+                    long double *expectancy, long double *std_variance,
+                    long double *a,
+                    long double *O, int nC, int SL){
+    long double *alpha = malloc(SL * nC * sizeof(long double));
+    
+    // init phase
+    long double val;
+    for (int i = 0; i < nC; i++){
+        val = pi[i] * biOt(expectancy, std_variance, i, O, 1);
+        alpha_t_i_assign(alpha, 0, i, val, nC);
+    }
+    
+    // recursion phase
+    for (int t = 1; t < SL; t++){
+        for (int j = 0; j < nC; j++){
+            long double sum = 0;
+            for (int i = 0; i < nC; i++){
+                sum += alpha_t_i_get(alpha, t - 1, i, nC)
+                * aij(a, i, j, nC);
+            }
+            val = biOt(expectancy, std_variance, j, O, t) * sum;
+            alpha_t_i_assign(alpha, t, j, val, nC);
+        }
+    }
+    
+    // termination
+    long double P = 0;
+    for (int i = 0; i < nC; i++){
+        P += alpha_t_i_get(alpha, SL - 1, i, nC);
+    }
+    
+    // alpha_print(alpha, SL, nC);
+    
+    free(alpha);
+    return P;
+}
+#endif

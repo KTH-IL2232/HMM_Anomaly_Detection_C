@@ -10,6 +10,9 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "macros.h"
+
+#ifdef DiscreteEmisDensity
 // pi: initial matrix, a: transition probability matrix
 // b: emission probability matrix
 // stores each log P(Sample) to dir specified by *path_statistics
@@ -20,6 +23,21 @@ int anomalyDetection(long double *pi, long double *a, long double *b,
                      int n_components, int n_features,
                      int n_samples,
                      const char *path_statistics);
+#endif
+
+#ifdef GaussianEmisDensity
+// pi: initial matrix, a: transition probability matrix
+// expectancy and std variance describes the emission density matrix
+// stores each log P(Sample) to dir specified by *path_statistics
+int anomalyDetection(long double *pi, long double *a,
+                     long double *expectancy, long double *std_variance,
+                     long double *observation_sequence_set,
+                     int *observation_length_set,
+                     int *label_sequence,
+                     int n_components,
+                     int n_samples,
+                     const char *path_statistics);
+#endif
 
 // tests whether the current oberservation sequence is an anomaly
 // Currently, the detection is based on threshold comparison.

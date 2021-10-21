@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "macros.h"
+#ifdef DiscreteEmisDensity
 #include "DiscreteModelFunc.h"
 
 int extractObservationSequence(int *O, int *SL, int i, int *buf){
@@ -39,3 +41,4 @@ int printObservation(int *O, int length){
     printf("End of O\n");
     return 0;
 }
+#endif
