@@ -49,7 +49,7 @@ long double forward(long double *pi, long double *b, long double *a,
     // init phase
     long double val;
     for (int i = 0; i < nC; i++){
-        val = pi[i] * biOt(b, i, O, 1, nF);
+        val = pi[i] * biOt(b, i, O, 0, nF);
         alpha_t_i_assign(alpha, 0, i, val, nC);
     }
     
@@ -89,7 +89,8 @@ long double forward(long double *pi,
     // init phase
     long double val;
     for (int i = 0; i < nC; i++){
-        val = pi[i] * biOt(expectancy, std_variance, i, O, 1);
+        long double pi_temp = pi[i];
+        val = pi_temp * biOt(expectancy, std_variance, i, O, 0);
         alpha_t_i_assign(alpha, 0, i, val, nC);
     }
     

@@ -5,7 +5,7 @@
 #define MACRO_H
 // uncomment the proper HMM model
 // uncommenting more than one model leads to undefined behavior
-// #define DiscreteEmisDensity
-#define GaussianEmisDensity
+#define DiscreteEmisDensity
+// #define GaussianEmisDensity
 // #define GMMEmisDensity
 #endif
