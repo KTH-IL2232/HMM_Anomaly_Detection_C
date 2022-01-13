@@ -63,7 +63,7 @@ long double forward(long double *pi, long double *b, long double *a,
             }
             val = biOt(b, j, O, t, nF) * sum;
             alpha_t_i_assign(alpha, t, j, val, nC);
-        }a
+        }
     }
     
     // termination
