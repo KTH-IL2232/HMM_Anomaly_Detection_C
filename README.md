@@ -42,7 +42,7 @@ An important feature of HMM is the type of emission probability. It is either di
 
 To change the type, simple take a look at the file "macros.h" and change accordingly. Uncomment the proper type, and comment the others. Note that even there is GMM HMM, we have not implemented that yet, thus uncommented the GMM type will not result in anything.
 
-# __(optional)__ 4. Pre-dataset explanation #
+# 4. Pre-dataset explanation __(optional)__ #
 There are four dataset given in folder "Pre-dataset". In the "dataset" folder for each dataset, the file "Test_anomaly_set_array.txt" stores the observation sequence. The file "Test_anomaly_set_label.txt" stores the labels for each sequence.
 
 The four pre-datasets are:
