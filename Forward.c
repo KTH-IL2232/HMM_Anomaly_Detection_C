@@ -10,7 +10,7 @@
 
 #ifdef GaussianEmisDensity
 #include "GaussianModelFunc.h"
-#endif
+#endif\
 
 int alpha_t_i_assign(long double *alpha, int t, int i, long double val, int nC){
     int start_id = nC * t;
@@ -63,7 +63,7 @@ long double forward(long double *pi, long double *b, long double *a,
             }
             val = biOt(b, j, O, t, nF) * sum;
             alpha_t_i_assign(alpha, t, j, val, nC);
-        }
+        }a
     }
     
     // termination
@@ -72,7 +72,7 @@ long double forward(long double *pi, long double *b, long double *a,
         P += alpha_t_i_get(alpha, SL - 1, i, nC);
     }
     
-    // alpha_print(alpha, SL, nC);
+    alpha_print(alpha, SL, nC);
     
     free(alpha);
     return P;
